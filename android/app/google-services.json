@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "855168810737",
+    "project_id": "municipality-app-3cbcc",
+    "storage_bucket": "municipality-app-3cbcc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855168810737:android:a6347b1e797a423af3f350",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQWz5zC3mQRp02L9KIZzD0oF1cYRofLVc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
