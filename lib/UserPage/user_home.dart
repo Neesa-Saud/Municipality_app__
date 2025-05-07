@@ -8,7 +8,6 @@ import '../function/database_function.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class UserHome extends StatefulWidget {
   const UserHome({super.key});
@@ -20,7 +19,6 @@ class UserHome extends StatefulWidget {
 class _UserHomeState extends State<UserHome> {
   final DatabaseService _databaseService = DatabaseService();
   int _selectedIndex = 0;
-  String? _profileImageUrl; // To store the user's profile image URL
 
   final List<Widget> _otherPages = [
     CommunityPage(),
@@ -31,24 +29,7 @@ class _UserHomeState extends State<UserHome> {
   @override
   void initState() {
     super.initState();
-    _loadProfileImage(); // Load the user's profile image on init
-  }
-
-  // Load the user's profile image from Firestore
-  Future<void> _loadProfileImage() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot userDoc =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-      if (userDoc.exists) {
-        setState(() {
-          _profileImageUrl = userDoc['profileImageUrl'];
-        });
-      }
-    }
+    // Removed _loadProfileImage call since it’s for image fetching
   }
 
   void _onItemTapped(int index) {
@@ -76,59 +57,23 @@ class _UserHomeState extends State<UserHome> {
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
-          builder:
-              (context) => IconButton(
-                icon: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage:
-                          _profileImageUrl != null
-                              ? CachedNetworkImageProvider(_profileImageUrl!)
-                              : null,
-                      child:
-                          _profileImageUrl == null
-                              ? const Icon(
-                                Icons.person,
-                                size: 20,
-                                color: Colors.grey,
-                              )
-                              : null,
-                    ),
-                    // Show the "Add" icon only when there is no profile image
-                    if (_profileImageUrl == null)
-                      Positioned.fill(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(20),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ProfilePage(),
-                                ),
-                              ).then((_) => _loadProfileImage());
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black.withOpacity(0.4),
-                              ),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+          builder: (context) => IconButton(
+            icon: const Stack(
+              alignment: Alignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  child: Icon(
+                    Icons.person,
+                    size: 20,
+                    color: Colors.grey,
+                  ),
                 ),
-                onPressed: () => Scaffold.of(context).openDrawer(),
-              ),
+                // Removed profile image logic, keeping placeholder
+              ],
+            ),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
         ),
         title: FutureBuilder<String?>(
           future: _databaseService.getUsername(user!.uid),
@@ -169,53 +114,18 @@ class _UserHomeState extends State<UserHome> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Stack(
+                  const Stack(
                     alignment: Alignment.center,
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundImage:
-                            _profileImageUrl != null
-                                ? CachedNetworkImageProvider(_profileImageUrl!)
-                                : null,
-                        child:
-                            _profileImageUrl == null
-                                ? const Icon(
-                                  Icons.person,
-                                  size: 30,
-                                  color: Colors.grey,
-                                )
-                                : null,
-                      ),
-                      // Show the "Add" icon only when there is no profile image
-                      if (_profileImageUrl == null)
-                        Positioned.fill(
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(30),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ProfilePage(),
-                                  ),
-                                ).then((_) => _loadProfileImage());
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black.withOpacity(0.4),
-                                ),
-                                child: const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                              ),
-                            ),
-                          ),
+                        child: Icon(
+                          Icons.person,
+                          size: 30,
+                          color: Colors.grey,
                         ),
+                      ),
+                      // Removed profile image logic, keeping placeholder
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -238,7 +148,7 @@ class _UserHomeState extends State<UserHome> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ProfilePage()),
-                ).then((_) => _loadProfileImage());
+                );
               },
             ),
             ListTile(
@@ -261,7 +171,6 @@ class _UserHomeState extends State<UserHome> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          // Adjust padding and image size based on screen width
           double padding = constraints.maxWidth > 600 ? 32.0 : 16.0;
           double imageHeight = constraints.maxWidth > 600 ? 300.0 : 150.0;
 
@@ -296,11 +205,10 @@ class _UserHomeState extends State<UserHome> {
                 const Divider(),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
-                    stream:
-                        FirebaseFirestore.instance
-                            .collection('problems')
-                            .orderBy('timestamp', descending: true)
-                            .snapshots(),
+                    stream: FirebaseFirestore.instance
+                        .collection('problems')
+                        .orderBy('timestamp', descending: true)
+                        .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
@@ -317,11 +225,10 @@ class _UserHomeState extends State<UserHome> {
                           String userId = problem['userId'];
 
                           return FutureBuilder<DocumentSnapshot>(
-                            future:
-                                FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(userId)
-                                    .get(),
+                            future: FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(userId)
+                                .get(),
                             builder: (context, userSnapshot) {
                               if (userSnapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -340,14 +247,11 @@ class _UserHomeState extends State<UserHome> {
                               }
 
                               String username = 'Unknown User';
-                              String? userAvatarUrl;
                               if (userSnapshot.hasData &&
                                   userSnapshot.data!.exists) {
                                 username =
                                     userSnapshot.data!['username'] ??
                                     'Unknown User';
-                                userAvatarUrl =
-                                    userSnapshot.data!['profileImageUrl'];
                               }
 
                               return Card(
@@ -365,22 +269,13 @@ class _UserHomeState extends State<UserHome> {
                                         children: [
                                           Row(
                                             children: [
-                                              CircleAvatar(
+                                              const CircleAvatar(
                                                 radius: 20,
-                                                backgroundImage:
-                                                    userAvatarUrl != null
-                                                        ? CachedNetworkImageProvider(
-                                                          userAvatarUrl,
-                                                        )
-                                                        : null,
-                                                child:
-                                                    userAvatarUrl == null
-                                                        ? const Icon(
-                                                          Icons.person,
-                                                          size: 20,
-                                                          color: Colors.grey,
-                                                        )
-                                                        : null,
+                                                child: Icon(
+                                                  Icons.person,
+                                                  size: 20,
+                                                  color: Colors.grey,
+                                                ),
                                               ),
                                               const SizedBox(width: 12),
                                               Expanded(
@@ -409,34 +304,8 @@ class _UserHomeState extends State<UserHome> {
                                               fontSize: 14,
                                             ),
                                           ),
-                                          if (problem['imageUrl'] != null)
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 12.0,
-                                              ),
-                                              child: CachedNetworkImage(
-                                                imageUrl: problem['imageUrl'],
-                                                height: imageHeight,
-                                                width: double.infinity,
-                                                fit: BoxFit.cover,
-                                                placeholder:
-                                                    (
-                                                      context,
-                                                      url,
-                                                    ) => const Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
-                                                    ),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        const Text(
-                                                          'Error loading image',
-                                                          style: TextStyle(
-                                                            color: Colors.red,
-                                                          ),
-                                                        ),
-                                              ),
-                                            ),
+                                          // Removed image section, keeping layout
+                                          const SizedBox(height: 12),
                                         ],
                                       ),
                                     ),
@@ -445,9 +314,9 @@ class _UserHomeState extends State<UserHome> {
                                       right: 8,
                                       child: Text(
                                         _formatTimestamp(problem['timestamp']),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 12,
-                                          color: Colors.grey[600],
+                                          color: Colors.grey,
                                         ),
                                       ),
                                     ),
@@ -484,10 +353,9 @@ class _UserHomeState extends State<UserHome> {
 
     return Scaffold(
       body: SafeArea(
-        child:
-            _selectedIndex == 0
-                ? _buildHomeContent()
-                : _otherPages[_selectedIndex - 1],
+        child: _selectedIndex == 0
+            ? _buildHomeContent()
+            : _otherPages[_selectedIndex - 1],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
