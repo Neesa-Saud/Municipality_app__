@@ -49,7 +49,7 @@ class PendingPage extends StatelessWidget {
   // Function to delete an image from Cloudinary using the API
   Future<void> _deleteImageFromCloudinary(String publicId) async {
     final url =
-        'https://api.cloudinary.com/v1_1/$cloudName/resources/image/upload';
+        'https://api.cloudinary.com/v1_1/dlne9uhda/resources/image/upload';
     final body = {
       'public_ids': [publicId],
     };

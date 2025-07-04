@@ -67,27 +67,33 @@ class _LogInPageState extends State<LogInPage> {
           children: [
             // Background red semi-circle
             Positioned(
-              bottom: -screenHeight * 0.65, // Position to cover bottom half
-              left: -screenWidth * 0.1, // Center horizontally
+              bottom: -screenHeight * 0.65,
+              left: -screenWidth * 0.1,
               child: Container(
-                height: screenHeight * 1.3, // Large enough to cover bottom
-                width: screenWidth * 2, // Wide enough to cover screen width
+                height: screenHeight * 1.3,
+                width: screenWidth * 2,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.red,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.redAccent,
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                    ),
+                  ],
                 ),
               ),
             ),
             // Main content
             Column(
               children: [
-                // Logo and Welcome Text (Top Section)
-                SizedBox(height: screenHeight * 0.05), // Responsive top padding
+                SizedBox(height: screenHeight * 0.05),
                 Center(
                   child: Column(
                     children: [
                       CircleAvatar(
-                        radius: screenWidth * 0.15, // Responsive logo size
+                        radius: screenWidth * 0.15,
                         backgroundColor: Colors.white,
                         child: ClipOval(
                           child: Image.asset(
@@ -102,26 +108,42 @@ class _LogInPageState extends State<LogInPage> {
                       const Text(
                         'WELCOME',
                         style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                          letterSpacing: 1.2,
                         ),
                       ),
                       const Text(
                         'सबैको समस्या , साझा अधिकार',
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                // Form Section
                 Expanded(
                   child: Center(
                     child: SingleChildScrollView(
                       child: Container(
-                        width: screenWidth * 0.52, // 80% of screen width
+                        width: screenWidth * 0.8,
                         padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.04,
-                          vertical: screenHeight * 0.01,
+                          horizontal: screenWidth * 0.06,
+                          vertical: screenHeight * 0.02,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 20,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
                         ),
                         child: Form(
                           key: _formkey,
@@ -131,24 +153,21 @@ class _LogInPageState extends State<LogInPage> {
                               if (!isLogin)
                                 TextFormField(
                                   key: const ValueKey('username'),
-                                  decoration: const InputDecoration(
-                                    hintText: "Enter Username",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.white,
-                                      ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Username',
+                                    labelStyle: const TextStyle(
+                                      color: Colors.black87,
                                     ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.white,
-                                      ),
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide.none,
                                     ),
                                   ),
-                                  style: const TextStyle(color: Colors.white),
                                   validator: (value) {
                                     if (value!.length < 3) {
-                                      return 'Username is too small';
+                                      return 'Username is too short';
                                     }
                                     return null;
                                   },
@@ -158,23 +177,26 @@ class _LogInPageState extends State<LogInPage> {
                                     });
                                   },
                                 ),
-                              SizedBox(height: screenHeight * 0.02),
+                              if (!isLogin)
+                                SizedBox(height: screenHeight * 0.02),
                               TextFormField(
                                 key: const ValueKey('email'),
-                                decoration: const InputDecoration(
-                                  hintText: "Enter your email",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                decoration: InputDecoration(
+                                  labelText: 'Email',
+                                  labelStyle: const TextStyle(
+                                    color: Colors.black87,
                                   ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                  filled: true,
+                                  fillColor: Colors.grey[100],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
                                   ),
                                 ),
-                                style: const TextStyle(color: Colors.white),
+                                keyboardType: TextInputType.emailAddress,
                                 validator: (value) {
                                   if (!value!.contains('@')) {
-                                    return 'Invalid email';
+                                    return 'Enter a valid email address';
                                   }
                                   return null;
                                 },
@@ -188,20 +210,21 @@ class _LogInPageState extends State<LogInPage> {
                               TextFormField(
                                 obscureText: true,
                                 key: const ValueKey('password'),
-                                decoration: const InputDecoration(
-                                  hintText: "Enter Password",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle: const TextStyle(
+                                    color: Colors.black87,
                                   ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                  filled: true,
+                                  fillColor: Colors.grey[100],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
                                   ),
                                 ),
-                                style: const TextStyle(color: Colors.white),
                                 validator: (value) {
                                   if (value!.length < 6) {
-                                    return 'Password is too small';
+                                    return 'Password must be at least 6 characters';
                                   }
                                   return null;
                                 },
@@ -211,8 +234,8 @@ class _LogInPageState extends State<LogInPage> {
                                   });
                                 },
                               ),
-                              SizedBox(height: screenHeight * 0.03),
-                              Container(
+                              SizedBox(height: screenHeight * 0.04),
+                              SizedBox(
                                 width: double.infinity,
                                 height: screenHeight * 0.07,
                                 child: ElevatedButton(
@@ -230,12 +253,18 @@ class _LogInPageState extends State<LogInPage> {
                                     backgroundColor: Colors.black,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25),
+                                      borderRadius: BorderRadius.circular(30),
                                     ),
+                                    elevation: 6,
+                                    shadowColor: Colors.redAccent,
                                   ),
                                   child: Text(
-                                    isLogin ? 'Login' : 'Signup',
-                                    style: const TextStyle(fontSize: 18),
+                                    isLogin ? 'Login' : 'Sign Up',
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.1,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -247,15 +276,20 @@ class _LogInPageState extends State<LogInPage> {
                                   });
                                 },
                                 style: TextButton.styleFrom(
-                                  foregroundColor: Colors.white,
+                                  foregroundColor: Colors.black,
+                                  textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                                 child:
                                     isLogin
                                         ? const Text(
-                                          "Don't have an account? Signup",
+                                          "Don't have an account? Sign Up",
                                         )
                                         : const Text(
-                                          "Already Signed Up? Login",
+                                          "Already have an account? Login",
                                         ),
                               ),
                             ],

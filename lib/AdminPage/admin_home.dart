@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/AdminPage/completedpage.dart';
-import 'package:myapp/AdminPage/notifications.dart';
+
 import 'package:myapp/AdminPage/pendingpae.dart';
 import 'package:myapp/AdminPage/usersid.dart';
 import 'package:myapp/utils/extensions.dart'; // Import the shared extension
@@ -24,7 +24,6 @@ class _AdminHomeState extends State<AdminHome> {
     AdminHomeContent(),
     PendingPage(),
     CompletedPage(),
-    NotificationPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -130,10 +129,6 @@ class _AdminHomeState extends State<AdminHome> {
           BottomNavigationBarItem(
             icon: Icon(Icons.check_circle),
             label: 'Completed',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-            label: 'Notifications',
           ),
         ],
         currentIndex: _selectedIndex,

@@ -5,13 +5,9 @@ import 'package:myapp/login.dart'; // Your LogInPage
 // ignore: depend_on_referenced_packages
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:cloudinary_url_gen/cloudinary.dart';
-import 'package:cloudinary_flutter/cloudinary_context.dart';
 
 void main() async {
-  CloudinaryContext.cloudinary = Cloudinary.fromCloudName(
-    cloudName: 'dlne9uhda',
-  );
+ 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
