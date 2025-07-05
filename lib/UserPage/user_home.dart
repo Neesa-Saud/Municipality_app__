@@ -190,172 +190,176 @@ class _UserHomeState extends State<UserHome> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Text(
-                'Feed',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.black,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.0),
+                child: Text(
+                  'Feed',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
-            const Divider(thickness: 1),
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream:
-                    FirebaseFirestore.instance
-                        .collection('problems')
-                        .orderBy('timestamp', descending: true)
-                        .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(child: Text('No problems posted yet.'));
-                  }
+              const Divider(thickness: 1),
+              Expanded(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream:
+                      FirebaseFirestore.instance
+                          .collection('problems')
+                          .orderBy('timestamp', descending: true)
+                          .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const Center(
+                        child: Text('No problems posted yet.'),
+                      );
+                    }
 
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      var problem = snapshot.data!.docs[index];
-                      String userId = problem['userId'];
+                    return ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        var problem = snapshot.data!.docs[index];
+                        String userId = problem['userId'];
 
-                      return FutureBuilder<DocumentSnapshot>(
-                        future:
-                            FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(userId)
-                                .get(),
-                        builder: (context, userSnapshot) {
-                          if (userSnapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Card(
-                              elevation: 4,
-                              margin: const EdgeInsets.symmetric(vertical: 8),
-                              child: const Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
+                        return FutureBuilder<DocumentSnapshot>(
+                          future:
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userId)
+                                  .get(),
+                          builder: (context, userSnapshot) {
+                            if (userSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Card(
+                                elevation: 4,
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-
-                          String username = 'Unknown User';
-                          String? userImageUrl;
-                          if (userSnapshot.hasData &&
-                              userSnapshot.data!.exists) {
-                            final data =
-                                userSnapshot.data!.data()
-                                    as Map<String, dynamic>;
-                            username = data['username'] ?? 'Unknown User';
-                            try {
-                              userImageUrl = data['profileImageUrl'];
-                            } catch (e) {
-                              userImageUrl = null;
+                              );
                             }
-                          }
 
-                          final String? imageUrl = problem['imageUrl'];
+                            String username = 'Unknown User';
+                            String? userImageUrl;
+                            if (userSnapshot.hasData &&
+                                userSnapshot.data!.exists) {
+                              final data =
+                                  userSnapshot.data!.data()
+                                      as Map<String, dynamic>;
+                              username = data['username'] ?? 'Unknown User';
+                              try {
+                                userImageUrl = data['profileImageUrl'];
+                              } catch (e) {
+                                userImageUrl = null;
+                              }
+                            }
 
-                          return Card(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            elevation: 3,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor: Colors.grey,
-                                        backgroundImage:
-                                            userImageUrl != null
-                                                ? NetworkImage(userImageUrl)
-                                                : null,
-                                        child:
-                                            userImageUrl == null
-                                                ? const Icon(
-                                                  Icons.person,
-                                                  size: 20,
-                                                  color: Colors.white,
-                                                )
-                                                : null,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          username,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                            final String? imageUrl = problem['imageUrl'];
+
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8),
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor: Colors.grey,
+                                          backgroundImage:
+                                              userImageUrl != null
+                                                  ? NetworkImage(userImageUrl)
+                                                  : null,
+                                          child:
+                                              userImageUrl == null
+                                                  ? const Icon(
+                                                    Icons.person,
+                                                    size: 20,
+                                                    color: Colors.white,
+                                                  )
+                                                  : null,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            username,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
                                           ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      problem['title'],
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      problem['description'],
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                    if (imageUrl != null &&
+                                        imageUrl.isNotEmpty) ...[
+                                      const SizedBox(height: 12),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.network(
+                                          imageUrl,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: 180,
                                         ),
                                       ),
                                     ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    problem['title'],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    problem['description'],
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                  if (imageUrl != null &&
-                                      imageUrl.isNotEmpty) ...[
                                     const SizedBox(height: 12),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Image.network(
-                                        imageUrl,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        height: 180,
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                        _formatTimestamp(problem['timestamp']),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ),
                                   ],
-                                  const SizedBox(height: 12),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Text(
-                                      _formatTimestamp(problem['timestamp']),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -85,9 +85,9 @@ class _UsersPageState extends State<UsersPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text(
+                child: Text(
                   'Cancel',
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: Colors.redAccent.shade700),
                 ),
               ),
               TextButton(
@@ -97,8 +97,8 @@ class _UsersPageState extends State<UsersPage> {
                   });
                   Navigator.pop(context);
                 },
-                child: const Text('Search'),
-              ),
+                child: const Text('Search',style: TextStyle(color: Colors.black),
+              )),
             ],
           ),
     );
@@ -109,13 +109,14 @@ class _UsersPageState extends State<UsersPage> {
     final filteredUsers = _getFilteredUsers();
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text(
           'All Users',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.red,
-        toolbarHeight: 80,
+        backgroundColor: Colors.redAccent.shade700,
+        toolbarHeight: 90,
         actions: [
           IconButton(
             icon: const Icon(Icons.search),

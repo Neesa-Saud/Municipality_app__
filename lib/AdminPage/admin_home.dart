@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/AdminPage/completedpage.dart';
 
-import 'package:myapp/AdminPage/pendingpae.dart';
+import 'package:myapp/AdminPage/pendingpage.dart';
 import 'package:myapp/AdminPage/usersid.dart';
 import 'package:myapp/utils/extensions.dart'; // Import the shared extension
 import 'package:myapp/utils/cloudinary_utils.dart'; // Import the Cloudinary utility
@@ -46,6 +46,7 @@ class _AdminHomeState extends State<AdminHome> {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       key: _scaffoldKey,
       appBar: AppBar(
         leading: IconButton(
@@ -71,19 +72,19 @@ class _AdminHomeState extends State<AdminHome> {
           ),
           const SizedBox(width: 16),
         ],
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.redAccent.shade700,
         toolbarHeight: 80,
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.red),
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.redAccent.shade700),
               child: Text(
                 'Admin Menu',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -123,7 +124,7 @@ class _AdminHomeState extends State<AdminHome> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.hourglass_empty),
+            icon: Icon(Icons.access_time),
             label: 'Pending',
           ),
           BottomNavigationBarItem(
@@ -132,7 +133,7 @@ class _AdminHomeState extends State<AdminHome> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.red,
+        selectedItemColor: Colors.redAccent.shade700,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
@@ -346,7 +347,7 @@ class AdminHomeContent extends StatelessWidget {
                                   children: [
                                     IconButton(
                                       icon: const Icon(
-                                        Icons.hourglass_empty,
+                                        Icons.access_time,
                                         color: Colors.orange,
                                       ),
                                       onPressed: () async {
@@ -524,8 +525,12 @@ class AdminHomeContent extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            FutureBuilder<String>(
-                              future: _getUsername(userId),
+                            FutureBuilder<DocumentSnapshot>(
+                              future:
+                                  FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(userId)
+                                      .get(),
                               builder: (context, userSnapshot) {
                                 if (userSnapshot.connectionState ==
                                     ConnectionState.waiting) {
@@ -546,30 +551,129 @@ class AdminHomeContent extends StatelessWidget {
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
                                                 Colors.grey,
-                                              ), // Match text color
+                                              ),
                                         ),
                                       ),
                                     ],
                                   );
                                 }
-                                if (userSnapshot.hasError) {
+                                if (userSnapshot.hasError ||
+                                    !userSnapshot.hasData ||
+                                    !userSnapshot.data!.exists) {
                                   return const Text(
-                                    'Posted by: Error',
+                                    'Posted by: Unknown User',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.grey,
                                     ),
                                   );
                                 }
-                                return Text(
-                                  'Posted by: ${userSnapshot.data}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
+
+                                final userData =
+                                    userSnapshot.data!.data()
+                                        as Map<String, dynamic>;
+                                final username =
+                                    userData['username'] ?? 'Unknown User';
+                                final email = userData['email'] ?? 'No Email';
+                                final profileImageUrl =
+                                    userData['profileImageUrl'];
+
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(4),
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (_) => AlertDialog(
+                                              title: const Text(
+                                                'User Info',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 40,
+                                                    backgroundColor:
+                                                        Colors.grey[200],
+                                                    backgroundImage:
+                                                        profileImageUrl != null
+                                                            ? NetworkImage(
+                                                              profileImageUrl,
+                                                            )
+                                                            : null,
+                                                    child:
+                                                        profileImageUrl == null
+                                                            ? const Icon(
+                                                              Icons.person,
+                                                              size: 40,
+                                                              color:
+                                                                  Colors.grey,
+                                                            )
+                                                            : null,
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  Text(
+                                                    username,
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    email,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed:
+                                                      () => Navigator.pop(
+                                                        context,
+                                                      ),
+                                                  child: Text(
+                                                    'Close',
+                                                    style: TextStyle(
+                                                      color:
+                                                          Colors
+                                                              .redAccent
+                                                              .shade700,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                      );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 2,
+                                        horizontal: 4,
+                                      ),
+                                      child: Text(
+                                        'Posted by: $username',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.redAccent.shade700,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 );
                               },
                             ),
+
                             const SizedBox(height: 4),
                             Text(
                               'Status: ${displayStatus.capitalize()}',

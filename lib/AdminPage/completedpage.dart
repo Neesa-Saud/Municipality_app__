@@ -204,9 +204,9 @@ class CompletedPage extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.delete,
-                                        color: Colors.red,
+                                        color: Colors.redAccent.shade700,
                                       ),
                                       onPressed: () async {
                                         bool? confirmDelete = await showDialog(
@@ -239,10 +239,13 @@ class CompletedPage extends StatelessWidget {
                                                           context,
                                                           true,
                                                         ),
-                                                    child: const Text(
+                                                    child: Text(
                                                       'Delete',
                                                       style: TextStyle(
-                                                        color: Colors.red,
+                                                        color:
+                                                            Colors
+                                                                .redAccent
+                                                                .shade700,
                                                       ),
                                                     ),
                                                   ),
@@ -328,9 +331,9 @@ class CompletedPage extends StatelessWidget {
                                 width: double.infinity,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return const Text(
+                                  return  Text(
                                     'Error loading image',
-                                    style: TextStyle(color: Colors.red),
+                                    style: TextStyle(color: Colors.redAccent.shade700),
                                   );
                                 },
                               ),

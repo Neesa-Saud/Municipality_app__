@@ -165,7 +165,10 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Report a Problem'),
+        title: Text(
+          'Report a Problem',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.redAccent.shade700,
         elevation: 0,
         toolbarHeight: 90,
