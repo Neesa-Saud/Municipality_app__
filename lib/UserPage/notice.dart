@@ -47,13 +47,14 @@ class NoticePage extends StatelessWidget {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text(
           'Notifications',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent.shade700,
-        toolbarHeight: 70,
+        toolbarHeight: 90,
       ),
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
@@ -96,11 +97,11 @@ class NoticePage extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
                       title: Text(
-                        'Your problem having title 👉"$problemTitle"👈 is now $status',
+                        'Your problem having title 👉"$problemTitle"👈 is now $status 😊',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        'Updated on: ${_formatTimestamp(notification['timestamp'])}',
+                        'Updated by admin on : ${_formatTimestamp(notification['timestamp'])}',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,

@@ -99,7 +99,9 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Your problem has been posted successfully!')),
+            const SnackBar(
+              content: Text('Your problem has been posted successfully!'),
+            ),
           );
           Navigator.pop(context);
         } catch (e) {
@@ -166,6 +168,7 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
         title: const Text('Report a Problem'),
         backgroundColor: Colors.redAccent.shade700,
         elevation: 0,
+        toolbarHeight: 90,
       ),
       backgroundColor: Colors.white,
       body: SafeArea(

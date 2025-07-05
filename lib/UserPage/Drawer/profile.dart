@@ -165,13 +165,14 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text(
           'My Profile',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.red,
-        toolbarHeight: 70,
+        backgroundColor: Colors.redAccent.shade700,
+        toolbarHeight: 90,
       ),
       body: SafeArea(
         child: Column(
@@ -298,117 +299,118 @@ class _ProfilePageState extends State<ProfilePage> {
                           vertical: 8,
                           horizontal: 16,
                         ),
-                        child: Stack(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (data != null &&
-                                      data.containsKey('imageUrl') &&
-                                      data['imageUrl'] != null &&
-                                      data['imageUrl'].toString().isNotEmpty)
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        data['imageUrl'],
-                                        width: double.infinity,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  if (data != null) ...[
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      data['title'] ?? 'No Title',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      data['description'] ?? '',
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: const Color.fromARGB(255, 255, 1, 1),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (data != null &&
+                                  data.containsKey('imageUrl') &&
+                                  data['imageUrl'] != null &&
+                                  data['imageUrl'].toString().isNotEmpty)
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    data['imageUrl'],
+                                    width: double.infinity,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                                onPressed: () async {
-                                  bool? confirmDelete = await showDialog(
-                                    context: context,
-                                    builder:
-                                        (context) => AlertDialog(
-                                          title: const Text('Delete Post'),
-                                          content: const Text(
-                                            'Are you sure you want to delete this post?',
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed:
-                                                  () => Navigator.pop(
-                                                    context,
-                                                    false,
+                              if (data != null) ...[
+                                const SizedBox(height: 12),
+                                Text(
+                                  data['title'] ?? 'No Title',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  data['description'] ?? '',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                                const SizedBox(height: 8),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Color.fromARGB(255, 255, 1, 1),
+                                    ),
+                                    onPressed: () async {
+                                      bool? confirmDelete = await showDialog(
+                                        context: context,
+                                        builder:
+                                            (context) => AlertDialog(
+                                              title: const Text('Delete Post'),
+                                              content: const Text(
+                                                'Are you sure you want to delete this post?',
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed:
+                                                      () => Navigator.pop(
+                                                        context,
+                                                        false,
+                                                      ),
+                                                  child: const Text(
+                                                    'Cancel',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                    ),
                                                   ),
-                                              child: const Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed:
-                                                  () => Navigator.pop(
-                                                    context,
-                                                    true,
-                                                  ),
-                                              child: const Text(
-                                                'Delete',
-                                                style: TextStyle(
-                                                  color: Colors.red,
                                                 ),
+                                                TextButton(
+                                                  onPressed:
+                                                      () => Navigator.pop(
+                                                        context,
+                                                        true,
+                                                      ),
+                                                  child: const Text(
+                                                    'Delete',
+                                                    style: TextStyle(
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                      );
+                                      if (confirmDelete == true) {
+                                        try {
+                                          await FirebaseFirestore.instance
+                                              .collection('problems')
+                                              .doc(problem.id)
+                                              .delete();
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Post deleted successfully',
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                  );
-                                  if (confirmDelete == true) {
-                                    try {
-                                      await FirebaseFirestore.instance
-                                          .collection('problems')
-                                          .doc(problem.id)
-                                          .delete();
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            'Post deleted successfully',
-                                          ),
-                                        ),
-                                      );
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Error deleting post: $e',
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                                          );
+                                        } catch (e) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Error deleting post: $e',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
                       );
                     },

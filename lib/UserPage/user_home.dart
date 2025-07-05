@@ -70,6 +70,7 @@ class _UserHomeState extends State<UserHome> {
     User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: Builder(
           builder:
@@ -198,7 +199,11 @@ class _UserHomeState extends State<UserHome> {
               padding: EdgeInsets.symmetric(vertical: 12.0),
               child: Text(
                 'Feed',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
               ),
             ),
             const Divider(thickness: 1),

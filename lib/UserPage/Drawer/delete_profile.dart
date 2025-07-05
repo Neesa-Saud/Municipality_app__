@@ -91,9 +91,14 @@ class _DeleteProfilePageState extends State<DeleteProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Delete Account'),
-        backgroundColor: Colors.red,
+        title: const Text(
+          'Delete Account',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.redAccent.shade700,
+        toolbarHeight: 90,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -118,10 +123,13 @@ class _DeleteProfilePageState extends State<DeleteProfilePage> {
             _isDeleting
                 ? CircularProgressIndicator(color: Colors.redAccent.shade700)
                 : ElevatedButton.icon(
-                  icon: const Icon(Icons.delete_forever),
-                  label: const Text('Delete My Account'),
+                  icon: const Icon(Icons.delete_forever, color: Colors.white),
+                  label: const Text(
+                    'Delete My Account',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent.shade700,
+                    backgroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                       vertical: 14,
